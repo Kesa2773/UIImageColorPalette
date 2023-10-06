@@ -64,26 +64,23 @@
 }
 
 - (UIImageColorPalette *)retrieveColorPaletteWithQuality:(UIImageResizeQuality)quality {
-    CGSize desiredSize = self.size;
-    if (quality != UIImageResizeQualityStandard) {
-        CGFloat resizeQuality = 1.0;
-        
-        switch (quality) {
-            case UIImageResizeQualityLow:
-                resizeQuality = 0.3;
-                break;
-            case UIImageResizeQualityMedium:
-                resizeQuality = 0.5;
-                break;
-            case UIImageResizeQualityHigh:
-                resizeQuality = 0.8;
-                break;
-            default:
-                break;
-        }
-        
-        desiredSize = CGSizeMake(self.size.width * resizeQuality, self.size.height * resizeQuality);
+    CGFloat resizeQuality = 1.0;
+    
+    switch (quality) {
+        case UIImageResizeQualityLow:
+            resizeQuality = 0.3;
+            break;
+        case UIImageResizeQualityMedium:
+            resizeQuality = 0.5;
+            break;
+        case UIImageResizeQualityHigh:
+            resizeQuality = 0.8;
+            break;
+        default:
+            break;
     }
+    
+    CGSize desiredSize = CGSizeMake(self.size.width * resizeQuality, self.size.height * resizeQuality);
     
     UIImage *imageToProcess = [self resizeImageWithDesiredSize:desiredSize quality:quality];
     if (!imageToProcess) {
@@ -169,7 +166,7 @@
 @implementation UIColor (Pixel)
 
 + (UIColor *)colorWithPixel:(Pixel *)pixel {
-    if (isnan(pixel.r)) {
+    if (isnan(pixel.r) || isnan(pixel.g) || isnan(pixel.b) || isnan(pixel.a)) {
         return nil;
     }
     
@@ -208,7 +205,7 @@
         
         for (int i = 0; i < partitions; i++) {
             [centerCandidates addObject:[[Pixel alloc] initWithR:0 g:0 b:0 a:0]];
-            [totals addObject:@(0)];
+            totals[i] = @(0);
         }
         
         for (Pixel *pixel in entries) {
